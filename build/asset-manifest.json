@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/compound-interest/static/css/main.2a4bd2ef.css",
+    "main.js": "/compound-interest/static/js/main.053673a0.js",
+    "index.html": "/compound-interest/index.html",
+    "main.2a4bd2ef.css.map": "/compound-interest/static/css/main.2a4bd2ef.css.map",
+    "main.053673a0.js.map": "/compound-interest/static/js/main.053673a0.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2a4bd2ef.css",
+    "static/js/main.053673a0.js"
+  ]
+}
