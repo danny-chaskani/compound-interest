@@ -1,3 +1,4 @@
+import ShareBar from './ShareBar';
 import React, { useState, useMemo } from 'react';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import ShareBar from './ShareBar';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -21,12 +22,7 @@ const s = {
   field: { marginBottom: '1.4rem' },
   label: { fontSize: '13px', color: '#8A8A9A', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', fontFamily: "'DM Sans', sans-serif" },
   val: { color: '#C9A84C', fontWeight: 500 },
-  textInput: {
-    width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)',
-    borderRadius: '8px', color: '#F0EDE6', padding: '10px 12px',
-    fontFamily: "'DM Sans', sans-serif", fontSize: '15px', outline: 'none',
-    direction: 'ltr', textAlign: 'right',
-  },
+  textInput: { width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#F0EDE6', padding: '10px 12px', fontFamily: "'DM Sans', sans-serif", fontSize: '15px', outline: 'none', direction: 'ltr', textAlign: 'right' },
   resultMain: { background: '#252733', border: '0.5px solid rgba(201,168,76,0.18)', borderRadius: '12px', padding: '1.2rem', textAlign: 'center' },
   resultMainLabel: { fontSize: '12px', color: '#8A8A9A', marginBottom: '6px', fontFamily: "'DM Sans', sans-serif" },
   resultMainAmount: { fontFamily: "'Playfair Display', serif", fontSize: '2rem', color: '#C9A84C', fontWeight: 700 },
@@ -82,41 +78,38 @@ export default function Calculator() {
   const principals = yearsArr.map(y => Math.min(principal + monthly * 12 * y, calcFinal(principal, r, y, monthly, freq)));
   const maxVal = Math.max(...vals, 1);
 
+  const shareResults = [
+    { key: 'סכום התחלתי', val: fmt(principal) },
+    { key: 'ריבית שנתית', val: rate + '%' },
+    { key: 'תקופה', val: years + ' שנה' },
+    { key: 'הפקדה חודשית', val: fmt(monthly) },
+    { key: 'סכום סופי צפוי', val: fmt(finalAmt) },
+    { key: 'רווח מריבית', val: '+' + fmt(interestEarned) },
+    { key: 'כפולת הכסף', val: 'x' + multiple },
+  ];
+
   return (
     <div style={s.wrapper} id="calculator">
       <div style={s.card}>
         <div style={s.grid}>
           <div style={s.inputs}>
             <div style={s.panelTitle}>פרמטרים</div>
-
             <div style={s.field}>
               <label style={s.label}>סכום התחלתי (₪)</label>
-              <input type="text" inputMode="numeric" style={s.textInput}
-                value={principalInput} onChange={handlePrincipalChange} placeholder="לדוגמה: 50,000" />
+              <input type="text" inputMode="numeric" style={s.textInput} value={principalInput} onChange={handlePrincipalChange} placeholder="10,000" />
             </div>
-
             <div style={s.field}>
-              <label style={s.label}>
-                ריבית שנתית
-                <span style={s.val}>{rate}%</span>
-              </label>
+              <label style={s.label}>ריבית שנתית <span style={s.val}>{rate}%</span></label>
               <input type="range" min="1" max="20" step="0.5" value={rate} onChange={e => setRate(+e.target.value)} />
             </div>
-
             <div style={s.field}>
-              <label style={s.label}>
-                תקופת השקעה
-                <span style={s.val}>{years} שנה</span>
-              </label>
+              <label style={s.label}>תקופת השקעה <span style={s.val}>{years} שנה</span></label>
               <input type="range" min="1" max="40" step="1" value={years} onChange={e => setYears(+e.target.value)} />
             </div>
-
             <div style={s.field}>
               <label style={s.label}>הפקדה חודשית (₪)</label>
-              <input type="text" inputMode="numeric" style={s.textInput}
-                value={monthlyInput} onChange={handleMonthlyChange} placeholder="לדוגמה: 500" />
+              <input type="text" inputMode="numeric" style={s.textInput} value={monthlyInput} onChange={handleMonthlyChange} placeholder="500" />
             </div>
-
             <div style={s.field}>
               <label style={{ ...s.label, display: 'block', marginBottom: '8px' }}>תדירות חישוב ריבית</label>
               <select value={freq} onChange={e => setFreq(+e.target.value)}>
@@ -126,7 +119,6 @@ export default function Calculator() {
               </select>
             </div>
           </div>
-
           <div style={s.results}>
             <div style={s.panelTitle}>תוצאות</div>
             <div style={s.resultMain}>
@@ -149,7 +141,6 @@ export default function Calculator() {
             </div>
           </div>
         </div>
-
         <div style={s.chartSection}>
           <div style={s.chartTitle}>צמיחה לאורך השנים</div>
           <div style={s.chartBars}>
@@ -173,6 +164,7 @@ export default function Calculator() {
             <div style={s.legendItem}><div style={{ ...s.legendDot, background: '#C9A84C' }} />ריבית צבורה</div>
           </div>
         </div>
+        <ShareBar title="מחשבון ריבית דה ריבית" results={shareResults} />
       </div>
     </div>
   );
