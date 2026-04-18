@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import ShareBar from './ShareBar';
+import { SliderField } from './Calculator';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -13,10 +14,8 @@ const s = {
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' },
   inputs: { padding: '1.5rem 2rem', borderLeft: '0.5px solid rgba(255,255,255,0.07)' },
   results: { padding: '1.5rem 2rem', background: '#1E2029' },
-  field: { marginBottom: '1.2rem' },
-  label: { fontSize: '13px', color: '#8A8A9A', marginBottom: '6px', display: 'flex', justifyContent: 'space-between', fontFamily: "'DM Sans', sans-serif" },
-  val: { color: '#C9A84C', fontWeight: 500 },
-  textInput: { width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#F0EDE6', padding: '9px 12px', fontFamily: "'DM Sans', sans-serif", fontSize: '14px', outline: 'none', direction: 'ltr', textAlign: 'right' },
+  fieldLabel: { fontSize: '13px', color: '#8A8A9A', marginBottom: '6px', fontFamily: "'DM Sans', sans-serif" },
+  textInput: { width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#F0EDE6', padding: '9px 12px', fontFamily: "'DM Sans', sans-serif", fontSize: '14px', outline: 'none', direction: 'ltr', textAlign: 'right', marginBottom: '1.2rem' },
   resultMain: { background: '#252733', border: '0.5px solid rgba(201,168,76,0.18)', borderRadius: '10px', padding: '1rem', textAlign: 'center', marginBottom: '1rem' },
   resultMainLabel: { fontSize: '11px', color: '#8A8A9A', marginBottom: '4px', fontFamily: "'DM Sans', sans-serif" },
   resultMainAmount: { fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', color: '#C9A84C', fontWeight: 700 },
@@ -42,14 +41,10 @@ export default function MortgageCalculator() {
   const results = useMemo(() => {
     const r = rate / 100 / 12;
     const n = years * 12;
-    if (r === 0) {
-      const monthly = loan / n;
-      return { monthly, totalPaid: monthly * n, totalInterest: 0 };
-    }
+    if (r === 0) { const monthly = loan / n; return { monthly, totalPaid: monthly * n, totalInterest: 0 }; }
     const monthly = loan * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     const totalPaid = monthly * n;
-    const totalInterest = totalPaid - loan;
-    return { monthly, totalPaid, totalInterest };
+    return { monthly, totalPaid, totalInterest: totalPaid - loan };
   }, [loan, rate, years]);
 
   return (
@@ -64,18 +59,10 @@ export default function MortgageCalculator() {
         </div>
         <div style={s.grid}>
           <div style={s.inputs}>
-            <div style={s.field}>
-              <label style={s.label}>סכום הלוואה (₪)</label>
-              <input type="text" inputMode="numeric" style={s.textInput} value={loanInput} onChange={handleLoanChange} placeholder="1,000,000" />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>ריבית שנתית <span style={s.val}>{rate}%</span></label>
-              <input type="range" min="1" max="10" step="0.1" value={rate} onChange={e => setRate(+e.target.value)} />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>תקופת הלוואה <span style={s.val}>{years} שנה</span></label>
-              <input type="range" min="5" max="30" step="1" value={years} onChange={e => setYears(+e.target.value)} />
-            </div>
+            <div style={s.fieldLabel}>סכום הלוואה (₪)</div>
+            <input type="text" inputMode="numeric" style={s.textInput} value={loanInput} onChange={handleLoanChange} placeholder="1,000,000" />
+            <SliderField label="ריבית שנתית" value={rate} min={1} max={10} step={0.1} onChange={setRate} suffix="%" />
+            <SliderField label="תקופת הלוואה" value={years} min={5} max={30} step={1} onChange={setYears} suffix="שנה" />
           </div>
           <div style={s.results}>
             <div style={s.resultMain}>

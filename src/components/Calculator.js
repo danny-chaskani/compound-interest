@@ -12,6 +12,59 @@ function calcFinal(P, r, t, pmt, n) {
   return compound + annuity;
 }
 
+// קומפוננטה משותפת — סליידר + שדה הקלדה
+function SliderField({ label, value, min, max, step, onChange, suffix = '', prefix = '' }) {
+  const [inputVal, setInputVal] = useState(String(value));
+  const [focused, setFocused] = useState(false);
+
+  const handleSlider = (e) => {
+    const v = +e.target.value;
+    onChange(v);
+    if (!focused) setInputVal(String(v));
+  };
+
+  const handleInput = (e) => {
+    setInputVal(e.target.value);
+    const num = parseFloat(e.target.value);
+    if (!isNaN(num)) {
+      const clamped = Math.min(Math.max(num, min), max);
+      onChange(clamped);
+    }
+  };
+
+  const handleBlur = () => {
+    setFocused(false);
+    setInputVal(String(value));
+  };
+
+  return (
+    <div style={{ marginBottom: '1.4rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+        <span style={{ fontSize: '13px', color: '#8A8A9A', fontFamily: "'DM Sans', sans-serif" }}>{label}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {prefix && <span style={{ fontSize: '13px', color: '#8A8A9A', fontFamily: "'DM Sans', sans-serif" }}>{prefix}</span>}
+          <input
+            type="number"
+            value={focused ? inputVal : value}
+            min={min} max={max} step={step}
+            onFocus={() => { setFocused(true); setInputVal(String(value)); }}
+            onBlur={handleBlur}
+            onChange={handleInput}
+            style={{
+              width: '64px', background: '#252733', border: '0.5px solid rgba(201,168,76,0.4)',
+              borderRadius: '6px', color: '#C9A84C', padding: '3px 6px', fontSize: '13px',
+              fontFamily: "'DM Sans', sans-serif", outline: 'none', textAlign: 'center',
+              fontWeight: 500, direction: 'ltr',
+            }}
+          />
+          {suffix && <span style={{ fontSize: '13px', color: '#8A8A9A', fontFamily: "'DM Sans', sans-serif" }}>{suffix}</span>}
+        </div>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={value} onChange={handleSlider} style={{ width: '100%' }} />
+    </div>
+  );
+}
+
 const s = {
   wrapper: { maxWidth: '900px', margin: '0 auto', padding: '0 1.5rem 4rem' },
   card: { background: '#161820', border: '0.5px solid rgba(201,168,76,0.18)', borderRadius: '20px', overflow: 'hidden' },
@@ -19,10 +72,7 @@ const s = {
   inputs: { padding: '2rem', borderLeft: '0.5px solid rgba(255,255,255,0.07)' },
   results: { padding: '2rem', background: '#1E2029', display: 'flex', flexDirection: 'column', gap: '0.75rem' },
   panelTitle: { fontSize: '12px', color: '#8A8A9A', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '1.5rem', fontFamily: "'DM Sans', sans-serif" },
-  field: { marginBottom: '1.4rem' },
-  label: { fontSize: '13px', color: '#8A8A9A', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', fontFamily: "'DM Sans', sans-serif" },
-  val: { color: '#C9A84C', fontWeight: 500 },
-  textInput: { width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#F0EDE6', padding: '10px 12px', fontFamily: "'DM Sans', sans-serif", fontSize: '15px', outline: 'none', direction: 'ltr', textAlign: 'right' },
+  textInput: { width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#F0EDE6', padding: '10px 12px', fontFamily: "'DM Sans', sans-serif", fontSize: '15px', outline: 'none', direction: 'ltr', textAlign: 'right', marginBottom: '1.4rem' },
   resultMain: { background: '#252733', border: '0.5px solid rgba(201,168,76,0.18)', borderRadius: '12px', padding: '1.2rem', textAlign: 'center' },
   resultMainLabel: { fontSize: '12px', color: '#8A8A9A', marginBottom: '6px', fontFamily: "'DM Sans', sans-serif" },
   resultMainAmount: { fontFamily: "'Playfair Display', serif", fontSize: '2rem', color: '#C9A84C', fontWeight: 700 },
@@ -36,7 +86,10 @@ const s = {
   legend: { display: 'flex', gap: '1.5rem', marginTop: '0.75rem', fontSize: '12px', color: '#8A8A9A', fontFamily: "'DM Sans', sans-serif" },
   legendItem: { display: 'flex', alignItems: 'center', gap: '6px' },
   legendDot: { width: '10px', height: '10px', borderRadius: '2px', flexShrink: 0 },
+  fieldLabel: { fontSize: '13px', color: '#8A8A9A', marginBottom: '6px', fontFamily: "'DM Sans', sans-serif" },
 };
+
+export { SliderField };
 
 export default function Calculator() {
   const [principal, setPrincipal] = useState(10000);
@@ -94,24 +147,24 @@ export default function Calculator() {
         <div style={s.grid}>
           <div style={s.inputs}>
             <div style={s.panelTitle}>פרמטרים</div>
-            <div style={s.field}>
-              <label style={s.label}>סכום התחלתי (₪)</label>
-              <input type="text" inputMode="numeric" style={s.textInput} value={principalInput} onChange={handlePrincipalChange} placeholder="10,000" />
+
+            <div style={{ marginBottom: '1.4rem' }}>
+              <div style={s.fieldLabel}>סכום התחלתי (₪)</div>
+              <input type="text" inputMode="numeric" style={s.textInput}
+                value={principalInput} onChange={handlePrincipalChange} placeholder="10,000" />
             </div>
-            <div style={s.field}>
-              <label style={s.label}>ריבית שנתית <span style={s.val}>{rate}%</span></label>
-              <input type="range" min="1" max="20" step="0.5" value={rate} onChange={e => setRate(+e.target.value)} />
+
+            <SliderField label="ריבית שנתית" value={rate} min={1} max={20} step={0.5} onChange={setRate} suffix="%" />
+            <SliderField label="תקופת השקעה" value={years} min={1} max={40} step={1} onChange={setYears} suffix="שנה" />
+
+            <div style={{ marginBottom: '1.4rem' }}>
+              <div style={s.fieldLabel}>הפקדה חודשית (₪)</div>
+              <input type="text" inputMode="numeric" style={s.textInput}
+                value={monthlyInput} onChange={handleMonthlyChange} placeholder="500" />
             </div>
-            <div style={s.field}>
-              <label style={s.label}>תקופת השקעה <span style={s.val}>{years} שנה</span></label>
-              <input type="range" min="1" max="40" step="1" value={years} onChange={e => setYears(+e.target.value)} />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>הפקדה חודשית (₪)</label>
-              <input type="text" inputMode="numeric" style={s.textInput} value={monthlyInput} onChange={handleMonthlyChange} placeholder="500" />
-            </div>
-            <div style={s.field}>
-              <label style={{ ...s.label, display: 'block', marginBottom: '8px' }}>תדירות חישוב ריבית</label>
+
+            <div style={{ marginBottom: '1.4rem' }}>
+              <div style={{ ...s.fieldLabel, marginBottom: '8px' }}>תדירות חישוב ריבית</div>
               <select value={freq} onChange={e => setFreq(+e.target.value)}>
                 <option value={12}>חודשית</option>
                 <option value={4}>רבעונית</option>
@@ -119,6 +172,7 @@ export default function Calculator() {
               </select>
             </div>
           </div>
+
           <div style={s.results}>
             <div style={s.panelTitle}>תוצאות</div>
             <div style={s.resultMain}>
@@ -141,6 +195,7 @@ export default function Calculator() {
             </div>
           </div>
         </div>
+
         <div style={s.chartSection}>
           <div style={s.chartTitle}>צמיחה לאורך השנים</div>
           <div style={s.chartBars}>

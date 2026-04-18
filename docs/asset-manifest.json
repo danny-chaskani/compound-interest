@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/compound-interest/static/css/main.2a4bd2ef.css",
-    "main.js": "/compound-interest/static/js/main.d714372b.js",
+    "main.js": "/compound-interest/static/js/main.73c0685e.js",
     "index.html": "/compound-interest/index.html",
     "main.2a4bd2ef.css.map": "/compound-interest/static/css/main.2a4bd2ef.css.map",
-    "main.d714372b.js.map": "/compound-interest/static/js/main.d714372b.js.map"
+    "main.73c0685e.js.map": "/compound-interest/static/js/main.73c0685e.js.map"
   },
   "entrypoints": [
     "static/css/main.2a4bd2ef.css",
-    "static/js/main.d714372b.js"
+    "static/js/main.73c0685e.js"
   ]
 }

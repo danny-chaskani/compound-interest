@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import ShareBar from './ShareBar';
+import { SliderField } from './Calculator';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -13,10 +14,8 @@ const s = {
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' },
   inputs: { padding: '1.5rem 2rem', borderLeft: '0.5px solid rgba(255,255,255,0.07)' },
   results: { padding: '1.5rem 2rem', background: '#1E2029' },
-  field: { marginBottom: '1.2rem' },
-  label: { fontSize: '13px', color: '#8A8A9A', marginBottom: '6px', display: 'flex', justifyContent: 'space-between', fontFamily: "'DM Sans', sans-serif" },
-  val: { color: '#C9A84C', fontWeight: 500 },
-  textInput: { width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#F0EDE6', padding: '9px 12px', fontFamily: "'DM Sans', sans-serif", fontSize: '14px', outline: 'none', direction: 'ltr', textAlign: 'right' },
+  fieldLabel: { fontSize: '13px', color: '#8A8A9A', marginBottom: '6px', fontFamily: "'DM Sans', sans-serif" },
+  textInput: { width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#F0EDE6', padding: '9px 12px', fontFamily: "'DM Sans', sans-serif", fontSize: '14px', outline: 'none', direction: 'ltr', textAlign: 'right', marginBottom: '1.2rem' },
   resultMain: { background: '#252733', border: '0.5px solid rgba(201,168,76,0.18)', borderRadius: '10px', padding: '1rem', textAlign: 'center', marginBottom: '1rem' },
   resultMainLabel: { fontSize: '11px', color: '#8A8A9A', marginBottom: '4px', fontFamily: "'DM Sans', sans-serif" },
   resultMainAmount: { fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', color: '#E07070', fontWeight: 700 },
@@ -36,16 +35,14 @@ export default function InflationCalculator() {
   const handleAmountChange = (e) => {
     const raw = e.target.value.replace(/[^\d]/g, '');
     const num = parseInt(raw) || 0;
-    setAmount(num);
-    setAmountInput(num.toLocaleString('he-IL'));
+    setAmount(num); setAmountInput(num.toLocaleString('he-IL'));
   };
 
   const results = useMemo(() => {
     const futureValue = amount * Math.pow(1 + inflation / 100, years);
     const realValue = amount / Math.pow(1 + inflation / 100, years);
     const loss = amount - realValue;
-    const lossPercent = ((loss / amount) * 100).toFixed(1);
-    return { futureValue, realValue, loss, lossPercent };
+    return { futureValue, realValue, loss, lossPercent: ((loss / amount) * 100).toFixed(1) };
   }, [amount, inflation, years]);
 
   return (
@@ -60,32 +57,22 @@ export default function InflationCalculator() {
         </div>
         <div style={s.grid}>
           <div style={s.inputs}>
-            <div style={s.field}>
-              <label style={s.label}>סכום היום (₪)</label>
-              <input type="text" inputMode="numeric" style={s.textInput} value={amountInput} onChange={handleAmountChange} placeholder="100,000" />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>שיעור אינפלציה שנתי <span style={s.val}>{inflation}%</span></label>
-              <input type="range" min="0.5" max="10" step="0.5" value={inflation} onChange={e => setInflation(+e.target.value)} />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>מספר שנים <span style={s.val}>{years} שנה</span></label>
-              <input type="range" min="1" max="40" step="1" value={years} onChange={e => setYears(+e.target.value)} />
-            </div>
-            <div style={s.note}>
-              ממוצע האינפלציה בישראל בשנים האחרונות עומד על כ-3%-4% בשנה. אינפלציה שוחקת את כוח הקנייה של הכסף שלך לאורך זמן.
-            </div>
+            <div style={s.fieldLabel}>סכום היום (₪)</div>
+            <input type="text" inputMode="numeric" style={s.textInput} value={amountInput} onChange={handleAmountChange} placeholder="100,000" />
+            <SliderField label="שיעור אינפלציה שנתי" value={inflation} min={0.5} max={10} step={0.5} onChange={setInflation} suffix="%" />
+            <SliderField label="מספר שנים" value={years} min={1} max={40} step={1} onChange={setYears} suffix="שנה" />
+            <div style={s.note}>ממוצע האינפלציה בישראל עומד על כ-3%-4% בשנה.</div>
           </div>
           <div style={s.results}>
             <div style={s.resultMain}>
-              <div style={s.resultMainLabel}>ערך ריאלי של הכסף שלך בעוד {years} שנה</div>
+              <div style={s.resultMainLabel}>ערך ריאלי בעוד {years} שנה</div>
               <div style={s.resultMainAmount}>{fmt(results.realValue)}</div>
             </div>
             {[
               { key: 'ערך היום', val: fmt(amount), red: false },
               { key: 'שחיקת ערך', val: '-' + fmt(results.loss), red: true },
               { key: 'אחוז שחיקה', val: results.lossPercent + '%', red: true },
-              { key: 'נדרש כדי לשמור ערך', val: fmt(results.futureValue), red: false },
+              { key: 'נדרש לשמור ערך', val: fmt(results.futureValue), red: false },
             ].map(({ key, val, red }, i) => (
               <div key={i} style={{ ...s.row, borderBottom: i === 3 ? 'none' : s.row.borderBottom }}>
                 <span style={s.rowKey}>{key}</span>
@@ -94,6 +81,13 @@ export default function InflationCalculator() {
             ))}
           </div>
         </div>
+        <ShareBar title="מחשבון אינפלציה" results={[
+          { key: 'סכום היום', val: fmt(amount) },
+          { key: 'אינפלציה', val: inflation + '%' },
+          { key: 'תקופה', val: years + ' שנה' },
+          { key: 'ערך ריאלי', val: fmt(results.realValue) },
+          { key: 'שחיקת ערך', val: results.lossPercent + '%' },
+        ]} />
       </div>
     </div>
   );

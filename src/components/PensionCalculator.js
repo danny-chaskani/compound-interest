@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import ShareBar from './ShareBar';
+import { SliderField } from './Calculator';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -13,10 +14,8 @@ const s = {
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' },
   inputs: { padding: '1.5rem 2rem', borderLeft: '0.5px solid rgba(255,255,255,0.07)' },
   results: { padding: '1.5rem 2rem', background: '#1E2029' },
-  field: { marginBottom: '1.2rem' },
-  label: { fontSize: '13px', color: '#8A8A9A', marginBottom: '6px', display: 'flex', justifyContent: 'space-between', fontFamily: "'DM Sans', sans-serif" },
-  val: { color: '#C9A84C', fontWeight: 500 },
-  textInput: { width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#F0EDE6', padding: '9px 12px', fontFamily: "'DM Sans', sans-serif", fontSize: '14px', outline: 'none', direction: 'ltr', textAlign: 'right' },
+  fieldLabel: { fontSize: '13px', color: '#8A8A9A', marginBottom: '6px', fontFamily: "'DM Sans', sans-serif" },
+  textInput: { width: '100%', background: '#252733', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#F0EDE6', padding: '9px 12px', fontFamily: "'DM Sans', sans-serif", fontSize: '14px', outline: 'none', direction: 'ltr', textAlign: 'right', marginBottom: '1.2rem' },
   resultMain: { background: '#252733', border: '0.5px solid rgba(201,168,76,0.18)', borderRadius: '10px', padding: '1rem', textAlign: 'center', marginBottom: '1rem' },
   resultMainLabel: { fontSize: '11px', color: '#8A8A9A', marginBottom: '4px', fontFamily: "'DM Sans', sans-serif" },
   resultMainAmount: { fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', color: '#C9A84C', fontWeight: 700 },
@@ -50,9 +49,7 @@ export default function PensionCalculator() {
     const n = 12;
     const rn = r / n;
     const periods = years * n;
-    const totalFund = rn > 0
-      ? monthlyTotal * ((Math.pow(1 + rn, periods) - 1) / rn)
-      : monthlyTotal * periods;
+    const totalFund = rn > 0 ? monthlyTotal * ((Math.pow(1 + rn, periods) - 1) / rn) : monthlyTotal * periods;
     const monthlyPension = totalFund / (20 * 12);
     const totalDeposited = monthlyTotal * 12 * years;
     return { totalFund, monthlyPension, totalDeposited, monthlyTotal };
@@ -70,30 +67,13 @@ export default function PensionCalculator() {
         </div>
         <div style={s.grid}>
           <div style={s.inputs}>
-            <div style={s.field}>
-              <label style={s.label}>משכורת ברוטו חודשית (₪)</label>
-              <input type="text" inputMode="numeric" style={s.textInput} value={salaryInput} onChange={handleSalaryChange} placeholder="15,000" />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>גיל נוכחי <span style={s.val}>{age}</span></label>
-              <input type="range" min="20" max="60" value={age} onChange={e => setAge(+e.target.value)} />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>גיל פרישה <span style={s.val}>{retireAge}</span></label>
-              <input type="range" min="60" max="70" value={retireAge} onChange={e => setRetireAge(+e.target.value)} />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>תשואה שנתית צפויה <span style={s.val}>{rate}%</span></label>
-              <input type="range" min="1" max="10" step="0.5" value={rate} onChange={e => setRate(+e.target.value)} />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>הפרשת עובד <span style={s.val}>{employeeRate}%</span></label>
-              <input type="range" min="5" max="7" step="0.5" value={employeeRate} onChange={e => setEmployeeRate(+e.target.value)} />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>הפרשת מעסיק <span style={s.val}>{employerRate}%</span></label>
-              <input type="range" min="5" max="8.333" step="0.333" value={employerRate} onChange={e => setEmployerRate(+e.target.value)} />
-            </div>
+            <div style={s.fieldLabel}>משכורת ברוטו חודשית (₪)</div>
+            <input type="text" inputMode="numeric" style={s.textInput} value={salaryInput} onChange={handleSalaryChange} placeholder="15,000" />
+            <SliderField label="גיל נוכחי" value={age} min={20} max={60} step={1} onChange={setAge} suffix="שנה" />
+            <SliderField label="גיל פרישה" value={retireAge} min={60} max={70} step={1} onChange={setRetireAge} suffix="שנה" />
+            <SliderField label="תשואה שנתית צפויה" value={rate} min={1} max={10} step={0.5} onChange={setRate} suffix="%" />
+            <SliderField label="הפרשת עובד" value={employeeRate} min={5} max={7} step={0.5} onChange={setEmployeeRate} suffix="%" />
+            <SliderField label="הפרשת מעסיק" value={employerRate} min={5} max={8.5} step={0.5} onChange={setEmployerRate} suffix="%" />
           </div>
           <div style={s.results}>
             <div style={s.resultMain}>
