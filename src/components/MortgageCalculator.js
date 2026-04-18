@@ -95,6 +95,13 @@ export default function MortgageCalculator() {
             ))}
           </div>
         </div>
+        <ShareBar title="מחשבון משכנתא" results={[
+          { key: 'סכום הלוואה', val: fmt(loan) },
+          { key: 'ריבית שנתית', val: rate + '%' },
+          { key: 'תקופה', val: years + ' שנה' },
+          { key: 'החזר חודשי', val: fmt(results.monthly) },
+          { key: 'סה"כ ריבית', val: fmt(results.totalInterest) },
+        ]} />
       </div>
     </div>
   );

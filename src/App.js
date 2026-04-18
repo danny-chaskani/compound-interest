@@ -6,11 +6,14 @@ import PensionCalculator from './components/PensionCalculator';
 import MortgageCalculator from './components/MortgageCalculator';
 import SavingsGoalCalculator from './components/SavingsGoalCalculator';
 import InflationCalculator from './components/InflationCalculator';
+import ComparisonCalculator from './components/ComparisonCalculator';
 import About from './components/About';
+import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 
 const tabs = [
   { id: 'compound', label: 'ריבית דה ריבית', emoji: '📈' },
+  { id: 'comparison', label: 'השוואת תרחישים', emoji: '⚖️' },
   { id: 'pension', label: 'קרן פנסיה', emoji: '🏦' },
   { id: 'mortgage', label: 'משכנתא', emoji: '🏠' },
   { id: 'savings', label: 'חיסכון ליעד', emoji: '🎯' },
@@ -56,12 +59,14 @@ export default function App() {
       </div>
 
       {activeTab === 'compound' && <Calculator />}
+      {activeTab === 'comparison' && <ComparisonCalculator />}
       {activeTab === 'pension' && <PensionCalculator />}
       {activeTab === 'mortgage' && <MortgageCalculator />}
       {activeTab === 'savings' && <SavingsGoalCalculator />}
       {activeTab === 'inflation' && <InflationCalculator />}
 
       <About />
+      <FAQ />
       <Footer />
     </>
   );

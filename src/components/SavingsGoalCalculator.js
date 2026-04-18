@@ -111,6 +111,12 @@ export default function SavingsGoalCalculator() {
             ))}
           </div>
         </div>
+        <ShareBar title="מחשבון חיסכון ליעד" results={[
+          { key: 'יעד', val: fmt(goal) },
+          { key: 'תקופה', val: years + ' שנה' },
+          { key: 'חיסכון חודשי נדרש', val: fmt(results.monthlySaving) },
+          { key: 'תרומת הריבית', val: '+' + fmt(results.interestEarned) },
+        ]} />
       </div>
     </div>
   );

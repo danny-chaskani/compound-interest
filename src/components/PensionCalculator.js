@@ -114,6 +114,13 @@ export default function PensionCalculator() {
             ))}
           </div>
         </div>
+        <ShareBar title="מחשבון קרן פנסיה" results={[
+          { key: 'משכורת', val: fmt(salary) },
+          { key: 'שנות חיסכון', val: years + ' שנה' },
+          { key: 'קצבה חודשית צפויה', val: fmt(results.monthlyPension) },
+          { key: 'סה"כ צבירה', val: fmt(results.totalFund) },
+          { key: 'רווח מתשואה', val: '+' + fmt(results.totalFund - results.totalDeposited) },
+        ]} />
       </div>
     </div>
   );
