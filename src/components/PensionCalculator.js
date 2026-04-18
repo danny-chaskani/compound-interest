@@ -1,4 +1,3 @@
-import ShareBar from './ShareBar';
 import React, { useState, useMemo } from 'react';
 import ShareBar from './ShareBar';
 

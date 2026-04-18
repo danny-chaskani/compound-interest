@@ -1,5 +1,5 @@
-import ShareBar from './ShareBar';
 import React, { useState, useMemo } from 'react';
+import ShareBar from './ShareBar';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
