@@ -55,7 +55,7 @@ export default function Hero() {
       <div style={s.badge}>מחשבון חינמי ומדויק</div>
       <h1 style={s.h1}>
         מחשבון <em style={s.em}>ריבית דה ריבית</em><br />
-        המתקדם בישראל
+        ועוד כלים פיננסיים
       </h1>
       <p style={s.p}>
         גלה כמה הכסף שלך יגדל עם ריבית מצטברת — חשב, השווה,
