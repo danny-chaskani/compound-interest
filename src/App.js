@@ -7,6 +7,7 @@ import MortgageCalculator from './components/MortgageCalculator';
 import SavingsGoalCalculator from './components/SavingsGoalCalculator';
 import InflationCalculator from './components/InflationCalculator';
 import ComparisonCalculator from './components/ComparisonCalculator';
+import HistoryTab from './components/HistoryTab';
 import About from './components/About';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
@@ -18,6 +19,7 @@ const tabs = [
   { id: 'mortgage', label: 'משכנתא', emoji: '🏠' },
   { id: 'savings', label: 'חיסכון ליעד', emoji: '🎯' },
   { id: 'inflation', label: 'אינפלציה', emoji: '📉' },
+  { id: 'history', label: 'החישובים שלי', emoji: '📋' },
 ];
 
 const tabsStyle = {
@@ -38,6 +40,10 @@ const tabsStyle = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('compound');
+
+  const handleLoadCalculation = (entry) => {
+    setActiveTab(entry.type);
+  };
 
   return (
     <>
@@ -64,9 +70,14 @@ export default function App() {
       {activeTab === 'mortgage' && <MortgageCalculator />}
       {activeTab === 'savings' && <SavingsGoalCalculator />}
       {activeTab === 'inflation' && <InflationCalculator />}
+      {activeTab === 'history' && <HistoryTab onLoadCalculation={handleLoadCalculation} />}
 
-      <About />
-      <FAQ />
+      {activeTab !== 'history' && (
+        <>
+          <About />
+          <FAQ />
+        </>
+      )}
       <Footer />
     </>
   );

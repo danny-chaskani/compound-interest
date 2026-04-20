@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { saveCalculation } from './HistoryTab';
 
 const s = {
   bar: {
@@ -7,6 +8,7 @@ const s = {
     padding: '1rem 2rem',
     borderTop: '0.5px solid rgba(255,255,255,0.07)',
     justifyContent: 'flex-end',
+    flexWrap: 'wrap',
   },
   btn: {
     display: 'flex',
@@ -20,17 +22,29 @@ const s = {
     fontSize: '13px',
     cursor: 'pointer',
     fontFamily: "'DM Sans', sans-serif",
-    transition: 'all 0.2s',
+  },
+  btnSaved: {
+    border: '0.5px solid rgba(76,175,122,0.4)',
+    color: '#4CAF7A',
   },
 };
 
-export default function ShareBar({ title, results }) {
+const typeMap = {
+  'מחשבון ריבית דה ריבית': 'compound',
+  'מחשבון משכנתא': 'mortgage',
+  'מחשבון קרן פנסיה': 'pension',
+  'מחשבון חיסכון ליעד': 'savings',
+  'מחשבון אינפלציה': 'inflation',
+  'השוואת תרחישים': 'comparison',
+};
+
+export default function ShareBar({ title, results, params }) {
+  const [saved, setSaved] = useState(false);
+
   const handleShare = async () => {
     const text = `${title}\n${results.map(r => `${r.key}: ${r.val}`).join('\n')}\n\nחושב ב: ${window.location.href}`;
     if (navigator.share) {
-      try {
-        await navigator.share({ title, text });
-      } catch (e) {}
+      try { await navigator.share({ title, text }); } catch (e) {}
     } else {
       await navigator.clipboard.writeText(text);
       alert('התוצאות הועתקו ללוח!');
@@ -57,9 +71,7 @@ export default function ShareBar({ title, results }) {
         <table>
           ${results.map(r => `<tr><td>${r.key}</td><td>${r.val}</td></tr>`).join('')}
         </table>
-        <div class="footer">
-          הופק מ-ריביתחכמה.co.il · המידע הוא לצרכי מידע בלבד ואינו ייעוץ פיננסי
-        </div>
+        <div class="footer">הופק מ-ריביתחכמה · המידע הוא לצרכי מידע בלבד ואינו ייעוץ פיננסי</div>
       </body>
       </html>
     `;
@@ -69,14 +81,23 @@ export default function ShareBar({ title, results }) {
     win.print();
   };
 
+  const handleSave = () => {
+    const type = typeMap[title] || 'compound';
+    const resultsObj = Object.fromEntries(results.map(r => [r.key, r.val]));
+    const paramsObj = params ? Object.fromEntries(params.map(r => [r.key, r.val])) : resultsObj;
+    saveCalculation(type, paramsObj, resultsObj);
+    window.dispatchEvent(new Event('ribit_history_updated'));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
   return (
     <div style={s.bar}>
-      <button style={s.btn} onClick={handleShare}>
-        ⬆ שתף תוצאות
+      <button style={{ ...s.btn, ...(saved ? s.btnSaved : {}) }} onClick={handleSave}>
+        {saved ? '✓ נשמר!' : '💾 שמור חישוב'}
       </button>
-      <button style={s.btn} onClick={handlePrint}>
-        🖨 הדפס / PDF
-      </button>
+      <button style={s.btn} onClick={handleShare}>⬆ שתף</button>
+      <button style={s.btn} onClick={handlePrint}>🖨 הדפס</button>
     </div>
   );
 }

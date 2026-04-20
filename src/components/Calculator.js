@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import ShareBar from './ShareBar';
+import { saveCalculation } from './HistoryTab';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
