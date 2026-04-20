@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import ShareBar from './ShareBar';
-import { SliderField } from './Calculator';
+import SliderField from './SliderField';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -61,7 +61,7 @@ export default function MortgageCalculator() {
           <div style={s.inputs}>
             <div style={s.fieldLabel}>סכום הלוואה (₪)</div>
             <input type="text" inputMode="numeric" style={s.textInput} value={loanInput} onChange={handleLoanChange} placeholder="1,000,000" />
-            <SliderField label="ריבית שנתית" value={rate} min={1} max={10} step={0.1} onChange={setRate} suffix="%" />
+            <SliderField label="ריבית שנתית" value={rate} min={1} max={10} step={0.1} onChange={setRate} suffix="%" isRate={true} />
             <SliderField label="תקופת הלוואה" value={years} min={5} max={30} step={1} onChange={setYears} suffix="שנה" />
           </div>
           <div style={s.results}>

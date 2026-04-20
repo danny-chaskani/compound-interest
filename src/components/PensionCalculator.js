@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import ShareBar from './ShareBar';
-import { SliderField } from './Calculator';
+import SliderField from './SliderField';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -71,7 +71,7 @@ export default function PensionCalculator() {
             <input type="text" inputMode="numeric" style={s.textInput} value={salaryInput} onChange={handleSalaryChange} placeholder="15,000" />
             <SliderField label="גיל נוכחי" value={age} min={20} max={60} step={1} onChange={setAge} suffix="שנה" />
             <SliderField label="גיל פרישה" value={retireAge} min={60} max={70} step={1} onChange={setRetireAge} suffix="שנה" />
-            <SliderField label="תשואה שנתית צפויה" value={rate} min={1} max={10} step={0.5} onChange={setRate} suffix="%" />
+            <SliderField label="תשואה שנתית צפויה" value={rate} min={1} max={10} step={0.5} onChange={setRate} suffix="%" isRate={true} />
             <SliderField label="הפרשת עובד" value={employeeRate} min={5} max={7} step={0.5} onChange={setEmployeeRate} suffix="%" />
             <SliderField label="הפרשת מעסיק" value={employerRate} min={5} max={8.5} step={0.5} onChange={setEmployerRate} suffix="%" />
           </div>

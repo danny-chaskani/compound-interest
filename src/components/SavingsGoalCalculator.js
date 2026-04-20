@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import ShareBar from './ShareBar';
-import { SliderField } from './Calculator';
+import SliderField from './SliderField';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -71,7 +71,7 @@ export default function SavingsGoalCalculator() {
             <input type="text" inputMode="numeric" style={s.textInput} value={goalInput} onChange={handleGoalChange} placeholder="100,000" />
             <div style={s.fieldLabel}>חיסכון קיים (₪)</div>
             <input type="text" inputMode="numeric" style={s.textInput} value={currentInput} onChange={handleCurrentChange} placeholder="0" />
-            <SliderField label="ריבית שנתית" value={rate} min={1} max={15} step={0.5} onChange={setRate} suffix="%" />
+            <SliderField label="ריבית שנתית" value={rate} min={1} max={15} step={0.5} onChange={setRate} suffix="%" isRate={true} />
             <SliderField label="תוך כמה זמן" value={years} min={1} max={30} step={1} onChange={setYears} suffix="שנה" />
           </div>
           <div style={s.results}>

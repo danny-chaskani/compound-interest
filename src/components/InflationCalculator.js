@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import ShareBar from './ShareBar';
-import { SliderField } from './Calculator';
+import SliderField from './SliderField';
 
 const fmt = (n) => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -59,7 +59,7 @@ export default function InflationCalculator() {
           <div style={s.inputs}>
             <div style={s.fieldLabel}>סכום היום (₪)</div>
             <input type="text" inputMode="numeric" style={s.textInput} value={amountInput} onChange={handleAmountChange} placeholder="100,000" />
-            <SliderField label="שיעור אינפלציה שנתי" value={inflation} min={0.5} max={10} step={0.5} onChange={setInflation} suffix="%" />
+            <SliderField label="שיעור אינפלציה שנתי" value={inflation} min={0.5} max={10} step={0.5} onChange={setInflation} suffix="%" isRate={true} />
             <SliderField label="מספר שנים" value={years} min={1} max={40} step={1} onChange={setYears} suffix="שנה" />
             <div style={s.note}>ממוצע האינפלציה בישראל עומד על כ-3%-4% בשנה.</div>
           </div>
