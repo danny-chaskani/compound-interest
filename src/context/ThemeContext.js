@@ -20,17 +20,17 @@ export function ThemeProvider({ children }) {
       document.body.style.background = '#0D0F14';
       document.body.style.color = '#F0EDE6';
     } else {
-      root.style.setProperty('--bg', '#F8F6F0');
+      root.style.setProperty('--bg', '#F0EDE6');
       root.style.setProperty('--bg-2', '#FFFFFF');
-      root.style.setProperty('--bg-3', '#F2EFE8');
-      root.style.setProperty('--bg-4', '#EAE7E0');
-      root.style.setProperty('--text', '#1A1A1A');
-      root.style.setProperty('--text-muted', '#666666');
-      root.style.setProperty('--text-dim', '#999999');
-      root.style.setProperty('--border', 'rgba(201,168,76,0.3)');
-      root.style.setProperty('--border-subtle', 'rgba(0,0,0,0.08)');
-      document.body.style.background = '#F8F6F0';
-      document.body.style.color = '#1A1A1A';
+      root.style.setProperty('--bg-3', '#E8E4DC');
+      root.style.setProperty('--bg-4', '#DDD9D0');
+      root.style.setProperty('--text', '#111111');
+      root.style.setProperty('--text-muted', '#444444');
+      root.style.setProperty('--text-dim', '#666666');
+      root.style.setProperty('--border', 'rgba(150,120,50,0.35)');
+      root.style.setProperty('--border-subtle', 'rgba(0,0,0,0.12)');
+      document.body.style.background = '#F0EDE6';
+      document.body.style.color = '#111111';
     }
   }, [isDark]);
 
